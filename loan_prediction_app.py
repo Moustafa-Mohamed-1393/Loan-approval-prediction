@@ -339,10 +339,11 @@ st.title("Loan Status Prediction - Model Comparison")
 st.write("This app allows you to evaluate various classification models for loan status prediction.")
 
 # Upload Dataset
+# Upload Dataset
 st.write("### Dataset Overview")
 st.dataframe(df.head())
 
-# Preprocessing
+# Data Preprocessing
 st.write("### Data Preprocessing")
 
 # Encode Target Variable
@@ -362,7 +363,10 @@ X = pd.get_dummies(X, columns=categorical_columns, drop_first=True)
 
 # Train-Test Split
 test_size = st.slider("Test Size (as percentage):", min_value=10, max_value=50, value=35, step=5)
-X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=test_size / 100, random_state=100, stratify=y)
+random_state = st.number_input("Enter Random State (default: 100):", value=100, step=1)
+X_train, X_test, y_train, y_test = train_test_split(
+    X, y, test_size=test_size / 100, random_state=random_state, stratify=y
+)
 
 # Scale Numeric Data
 scaler = StandardScaler()
@@ -371,18 +375,18 @@ X_test[numeric_columns] = scaler.transform(X_test[numeric_columns])
 
 st.write("Data has been preprocessed successfully!")
 
-# Model Evaluation
+# Model Training and Evaluation
 st.write("### Model Training and Evaluation")
 
 # List of models
 models = {
-    "Logistic Regression": LogisticRegression(random_state=48, max_iter=1000),
+    "Logistic Regression": LogisticRegression(random_state=random_state, max_iter=1000),
     "K-Nearest Neighbors": KNeighborsClassifier(),
-    "Support Vector Machine": SVC(random_state=48),
-    "Decision Tree": DecisionTreeClassifier(random_state=100),
-    "Random Forest": RandomForestClassifier(random_state=42),
-    "Gradient Boosting": GradientBoostingClassifier(random_state=48),
-    "XGBoost": XGBClassifier(),
+    "Support Vector Machine": SVC(random_state=random_state),
+    "Decision Tree": DecisionTreeClassifier(random_state=random_state),
+    "Random Forest": RandomForestClassifier(random_state=random_state),
+    "Gradient Boosting": GradientBoostingClassifier(random_state=random_state),
+    "XGBoost": XGBClassifier(random_state=random_state),
     "Naive Bayes": GaussianNB()
 }
 
